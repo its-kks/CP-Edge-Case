@@ -1,11 +1,19 @@
 import * as vscode from "vscode";
 import { getNonce } from "./utilities/getNonce";
+import { selectFile } from "./utilities/webviewResponse";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
     _view?: vscode.WebviewView;
     _doc?: vscode.TextDocument;
+    _fileObject?: { [key: string]: string | undefined };
 
-    constructor(private readonly _extensionUri: vscode.Uri) { }
+    constructor(private readonly _extensionUri: vscode.Uri) {
+        this._fileObject = {};
+        this._fileObject["correct"] = undefined;
+        this._fileObject["incorrect"] = undefined;
+        this._fileObject["generator"] = undefined;
+
+    }
 
     public resolveWebviewView(webviewView: vscode.WebviewView) {
         this._view = webviewView;
@@ -20,7 +28,24 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
         webviewView.webview.onDidReceiveMessage(async (data) => {
-
+            // handle messages sent by webview and received by extension
+            switch (data.command) {
+                case 'correctFileSelect':
+                    if (this._fileObject) {
+                        this._fileObject["correct"] = await selectFile();
+                    }
+                    return;
+                case 'incorrectFileSelect':
+                    if (this._fileObject) {
+                        this._fileObject["incorrect"] = await selectFile();
+                    }
+                    return;
+                case 'generatorFileSelect':
+                    if (this._fileObject) {
+                        this._fileObject["generator"] = await selectFile();
+                    }
+                    return;
+            }
         });
     }
 
@@ -34,6 +59,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         );
         const styleVSCodeUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this._extensionUri, "media/css", "vscode.css")
+        );
+        const styleSidebarUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, "media/css", "sidebar.css")
+        );
+
+        const scriptUiUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, "src/UI", "uiHandle.ts")
         );
 
         // Use a nonce to only allow a specific script to be run.
@@ -50,10 +82,65 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				<link href="${styleResetUri}" rel="stylesheet">
 				<link href="${styleVSCodeUri}" rel="stylesheet">
+                <link href="${styleSidebarUri}" rel="stylesheet">
 			</head>
       <body>
-				<h1> Hello Friends </h1>
-                <button>Hello</button>
+                <div class="main-div">
+                    <div class="object-container">
+                        <div class="head-div">
+                            <h2> Edge Case Finder </h2>
+                        </div>
+
+                        <div class = "div-input">
+
+                            <input placeholder="No file selected" disabled/>
+                            <button class="slect-correct-file">Select Correct Code File</button>
+
+                            <input placeholder="No file selected" disabled/>
+                            <button class="select-wrong-file">Select Incorrect Code File</button>
+
+                            <input placeholder="No file selected" disabled/>
+                            <button class="select-generator-file">Select Code Generator File</button>
+
+                            <div class="div-test-case">
+                                <label for="testCaseCount">Select number of test cases:</label>
+                                <select id="testCaseCount" name="testCaseCount">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        
+                        <div class="result-div">
+                            
+                            <label for="testCase">Test Case:</label>
+                            <textarea class="test-case" id="testCase"></textarea>
+
+                            <label for="correctOutput">Correct Output:</label>
+                            <textarea class="correct-output" id="correctOutput"></textarea>
+
+                            <label for="incorrectOutput">Incorrect Output:</label>
+                            <textarea class="incorrect-output" id="incorrectOutput"></textarea>
+                        </div>
+                        
+                    </div>
+                    <div class="start-stop-div">
+                        <button class='start'>Run</button>
+                        <button class='stop' disabled>Stop</button>
+                        <button class='reset'>Reset</button>
+                    </div>
+                </div>
+                <script nonce=${nonce}>
+                    const webVscode = acquireVsCodeApi();
+                </script>
+                <script nonce=${nonce} src=${scriptUiUri}></script>
+
+
 			</body>
 			</html>`;
     }
