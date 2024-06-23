@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { getNonce } from "./utilities/getNonce";
-import { selectFile, updateFileName } from "./utilities/webviewResponse";
+import { selectFile, updateFileName, setOutput } from "./utilities/webviewResponse";
 import { executeFiles } from "./utilities/handleFileExecution";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
@@ -35,26 +35,36 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                 case 'correctFileSelect':
                     if (this._fileObject) {
                         this._fileObject["correct"] = await selectFile();
-                        updateFileName(webviewView,{...this._fileObject});
+                        updateFileName(webviewView, { ...this._fileObject });
                     }
                     return;
                 case 'incorrectFileSelect':
                     if (this._fileObject) {
                         this._fileObject["incorrect"] = await selectFile();
-                        updateFileName(webviewView,{...this._fileObject});
+                        updateFileName(webviewView, { ...this._fileObject });
                     }
                     return;
                 case 'generatorFileSelect':
                     if (this._fileObject) {
                         this._fileObject["generator"] = await selectFile();
-                        updateFileName(webviewView,{...this._fileObject});
-                        await executeFiles({...this._fileObject});
+                        updateFileName(webviewView, { ...this._fileObject });
                     }
                     return;
                 case 'testCountChanged':
-                    if(this._fileObject) {
+                    if (this._fileObject) {
                         this._fileObject["count"] = data.count;
                     }
+                    return;
+                case 'findTestCases':
+                    if (this._fileObject && this._fileObject["correct"] &&
+                        this._fileObject["incorrect"] && this._fileObject["generator"]) {
+                        let testcaseAndOutput : string[] = await executeFiles({ ...this._fileObject });
+                        setOutput(webviewView,testcaseAndOutput);
+                    }
+                    else{
+                        vscode.window.showWarningMessage("Select all files first");
+                    }
+                    return;
             }
         });
     }

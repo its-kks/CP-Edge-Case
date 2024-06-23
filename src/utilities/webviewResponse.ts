@@ -7,7 +7,7 @@ export async function selectFile() {
         canSelectMany: false,
         openLabel: 'Select File',
         filters: {
-            'Code Files': ['cpp','c','cc','java','py']
+            'Code Files': ['cpp', 'c', 'cc', 'java', 'py']
         }
     };
 
@@ -17,7 +17,7 @@ export async function selectFile() {
         vscode.window.showInformationMessage(`Selected file: ${fileUri[0].fsPath}`);
         return fileUri[0].fsPath;
     }
-    else{
+    else {
         vscode.window.showErrorMessage(`Failed to select file`);
         return undefined;
     }
@@ -30,4 +30,12 @@ export function updateFileName(webviewView: vscode.WebviewView, fileObject: { [k
         fileObject: fileObject
     });
 
+}
+
+// send message to show the generated test case and output of correct and incorrect file
+export function setOutput(webviewView: vscode.WebviewView, receivedOutput : string[] | undefined) {
+    webviewView.webview.postMessage({
+        command: 'updateOutputs',
+        receivedOutput: receivedOutput
+    });
 }

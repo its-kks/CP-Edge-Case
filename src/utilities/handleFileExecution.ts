@@ -7,36 +7,43 @@ import { MAX_EXECUTION_TIME, MAX_MEMORY_USAGE, EXECUTION_COMMANDS } from '../con
 export async function executeFiles(fileObject: { [key: string]: string | undefined }) {
 
     const extGen = fileObject["generator"]?.split('.').pop();
+    const extCorr = fileObject["correct"]?.split('.').pop();
+    const extIncorr = fileObject["incorrect"]?.split('.').pop();
 
-    let generatorArr : string[] | undefined;
-    let correctArr : string[] | undefined;
-    let incorrectArr : string[] | undefined;
+    let generatorOutput: string = '';
+    let correctOutput: string = ' ';
+    let incorrectOutput: string = ' ';
 
-    if (fileObject["generator"] && extGen) {
-        generatorArr = await executeSingleFile(fileObject["generator"], extGen, '');
+    while (correctOutput === incorrectOutput) {
+        if (fileObject["generator"] && extGen) {
+            try {
+                generatorOutput = await executeSingleFile(fileObject["generator"], extGen, '');
+                if (fileObject["correct"] && extCorr && fileObject["incorrect"] && extIncorr) {
+
+                    try {
+                        correctOutput = await executeSingleFile(fileObject["correct"], extCorr, generatorOutput);
+                        incorrectOutput = await executeSingleFile(fileObject["incorrect"], extIncorr, generatorOutput);
+                    }
+                    catch (error) {
+                        throw error;
+                    }
+
+                }
+            }
+            catch (error) {
+                vscode.window.showErrorMessage(`${error}`);
+            }
+        }
     }
-    if(generatorArr){
-        
-        if( generatorArr[0].length === 0 && generatorArr[1].length === 0){
-            vscode.window.showErrorMessage("Failed to execute generator file");
-        }
-        else if(generatorArr[1].length === 0){
-            vscode.window.showWarningMessage(`OUTPUT ${generatorArr[0]}`);
-        }
-        else{
-            vscode.window.showErrorMessage(`Error in generator file ${generatorArr[1]}`);
-        }
-    }
-
-
+    return [generatorOutput,correctOutput, incorrectOutput];
 }
 
-export function executeSingleFile(filename: string, extension: string, stdInput: string): Promise<[string, string]> {
+export function executeSingleFile(filename: string, extension: string, stdInput: string): Promise<string> {
     return new Promise((resolve, reject) => {
         let command = EXECUTION_COMMANDS[extension];
         if (command) {
             command = command.replace(/\$\{file\}/g, filename).replace(/\$\{fileBase\}/g, filename.split('.')[0]);
-            const child = spawn(command,  { shell: true });
+            const child = spawn(command, { shell: true });
             child.stdin.write(stdInput);
             child.stdin.end();
 
@@ -53,9 +60,9 @@ export function executeSingleFile(filename: string, extension: string, stdInput:
 
             child.on('close', (code) => {
                 if (code === 0) {
-                    resolve([stdout, stderr]);
+                    resolve(stdout);
                 } else {
-                    reject(new Error(`child process exited with code ${code}`));
+                    reject(new Error(`${stderr}`));
                 }
             });
 
@@ -63,8 +70,7 @@ export function executeSingleFile(filename: string, extension: string, stdInput:
                 reject(err);
             });
         } else {
-            vscode.window.showErrorMessage(`No execution command for .${extension} file`);
-            resolve(['', '']);
+            reject(`No execution command for .${extension} file`);
         }
     });
 }
