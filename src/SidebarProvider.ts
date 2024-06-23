@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { getNonce } from "./utilities/getNonce";
-import { selectFile } from "./utilities/webviewResponse";
+import { selectFile, updateFileName } from "./utilities/webviewResponse";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
     _view?: vscode.WebviewView;
@@ -33,16 +33,19 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                 case 'correctFileSelect':
                     if (this._fileObject) {
                         this._fileObject["correct"] = await selectFile();
+                        updateFileName(webviewView,{...this._fileObject});
                     }
                     return;
                 case 'incorrectFileSelect':
                     if (this._fileObject) {
                         this._fileObject["incorrect"] = await selectFile();
+                        updateFileName(webviewView,{...this._fileObject});
                     }
                     return;
                 case 'generatorFileSelect':
                     if (this._fileObject) {
                         this._fileObject["generator"] = await selectFile();
+                        updateFileName(webviewView,{...this._fileObject});
                     }
                     return;
             }
@@ -93,13 +96,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
                         <div class = "div-input">
 
-                            <input placeholder="No file selected" disabled/>
+                            <input placeholder="No file selected" disabled class="correct-file-input"/>
                             <button class="slect-correct-file">Select Correct Code File</button>
 
-                            <input placeholder="No file selected" disabled/>
+                            <input placeholder="No file selected" disabled class="incorrect-file-input"/>
                             <button class="select-wrong-file">Select Incorrect Code File</button>
 
-                            <input placeholder="No file selected" disabled/>
+                            <input placeholder="No file selected" disabled class="generator-file-input"/>
                             <button class="select-generator-file">Select Code Generator File</button>
 
                             <div class="div-test-case">

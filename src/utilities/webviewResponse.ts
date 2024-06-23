@@ -24,3 +24,10 @@ export async function selectFile() {
 }
 
 // send message to add name ( update name ) of selected file in webview
+export function updateFileName(webviewView: vscode.WebviewView, fileObject: { [key: string]: string | undefined }) {
+    webviewView.webview.postMessage({
+        command: 'updateFileName',
+        fileObject: fileObject
+    });
+
+}
