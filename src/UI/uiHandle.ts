@@ -1,6 +1,7 @@
 const correctFileSelectButton = document.querySelector(".slect-correct-file");
 const incorrectFileSelectButton = document.querySelector(".select-wrong-file");
 const generatorFileSelectButton = document.querySelector(".select-generator-file");
+const selectElement = document.getElementById('testCaseCount');
 
 
 // Correct file select button event listener
@@ -21,6 +22,15 @@ incorrectFileSelectButton?.addEventListener("click", () => {
 generatorFileSelectButton?.addEventListener("click", () => {
     webVscode.postMessage({
         command: 'generatorFileSelect',
+    });
+});
+
+
+// event listener for option list
+selectElement?.addEventListener("change",(event)=>{
+    webVscode.postMessage({
+        command: 'testCountChanged',
+        count: event.target?.value,
     });
 });
 

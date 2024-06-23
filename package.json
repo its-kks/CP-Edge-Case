@@ -53,6 +53,7 @@
   "devDependencies": {
     "@types/mocha": "^10.0.6",
     "@types/node": "20.x",
+    "@types/pidusage": "^2.0.5",
     "@types/vscode": "^1.90.0",
     "@typescript-eslint/eslint-plugin": "^7.11.0",
     "@typescript-eslint/parser": "^7.11.0",
@@ -233,6 +234,7 @@
     "path-type": "^4.0.0",
     "picocolors": "^1.0.1",
     "picomatch": "^2.3.1",
+    "pidusage": "^3.0.2",
     "pkg-dir": "^4.2.0",
     "prelude-ls": "^1.2.1",
     "process-nextick-args": "^2.0.1",

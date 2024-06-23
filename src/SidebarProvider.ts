@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { getNonce } from "./utilities/getNonce";
 import { selectFile, updateFileName } from "./utilities/webviewResponse";
+import { executeFiles } from "./utilities/handleFileExecution";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
     _view?: vscode.WebviewView;
@@ -12,6 +13,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         this._fileObject["correct"] = undefined;
         this._fileObject["incorrect"] = undefined;
         this._fileObject["generator"] = undefined;
+        this._fileObject["count"] = "1";
 
     }
 
@@ -46,8 +48,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                     if (this._fileObject) {
                         this._fileObject["generator"] = await selectFile();
                         updateFileName(webviewView,{...this._fileObject});
+                        await executeFiles({...this._fileObject});
                     }
                     return;
+                case 'testCountChanged':
+                    if(this._fileObject) {
+                        this._fileObject["count"] = data.count;
+                    }
             }
         });
     }
