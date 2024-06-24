@@ -52,3 +52,9 @@ export function enableResetButton(webviewView: vscode.WebviewView) {
         command: 'enableReset'
     });
 }
+
+export function disableStopButton(webviewResponse: vscode.WebviewView){
+    webviewResponse.webview.postMessage({
+        command: 'disableStop'
+    });
+}

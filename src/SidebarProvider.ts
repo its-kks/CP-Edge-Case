@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { getNonce } from "./utilities/getNonce";
-import { selectFile, updateFileName, setOutput, enableStartButton, enableResetButton } from "./utilities/webviewResponse";
+import { selectFile, updateFileName, setOutput, enableStartButton, enableResetButton, disableStopButton } from "./utilities/webviewResponse";
 import { executeFiles } from "./utilities/handleFileExecution";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
@@ -63,6 +63,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
                         this._fileObject["execute"] = "true";
                         let testcaseAndOutput: string[] = await executeFiles(this._fileObject);
+                        disableStopButton(webviewView);
                         if (testcaseAndOutput[1] === testcaseAndOutput[2] || this._fileObject["execute"] === "false") {
                             testcaseAndOutput[0] = '';
                             testcaseAndOutput[1] = '';

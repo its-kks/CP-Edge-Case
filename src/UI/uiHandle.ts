@@ -115,6 +115,10 @@ window.addEventListener('message', (event) => {
                 resetButton.disabled = false;
             }
             return;
-
+        case 'disableStop':
+            if (stopButton){
+                stopButton.disabled = true;
+            }
+            return;
     }
 });
