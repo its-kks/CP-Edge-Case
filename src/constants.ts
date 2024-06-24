@@ -12,7 +12,7 @@ const javaCommand = vscode.workspace.getConfiguration('cp-edge-case').get("Java 
 // system values
 const os: string = platform();
 
-export const MAX_EXECUTION_TIME: number | undefined =
+export const MAX_EXECUTION_TIME: number =
     typeof maxExecutionTimeConfig === 'number' ? maxExecutionTimeConfig : 5000;
 export const MAX_MEMORY_USAGE: number =
     typeof maxMemoryUsageConfig === 'number' ? 1024 * 1024 * 1024 * maxMemoryUsageConfig : 1024 * 1024 * 1024 * 1;
