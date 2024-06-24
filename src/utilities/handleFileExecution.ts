@@ -4,7 +4,7 @@ import pidusage from 'pidusage';
 import { MAX_EXECUTION_TIME, MAX_MEMORY_USAGE, EXECUTION_COMMANDS } from '../constants';
 
 
-export async function executeFiles(fileObject: { [key: string]: string | undefined }) : Promise<string[]>{
+export async function executeFiles(fileObject: { [key: string]: string | undefined }): Promise<string[]> {
     const extGen = fileObject["generator"]?.split('.').pop();
     const extCorr = fileObject["correct"]?.split('.').pop();
     const extIncorr = fileObject["incorrect"]?.split('.').pop();
@@ -36,8 +36,35 @@ export function executeSingleFile(filename: string, extension: string, stdInput:
     return new Promise((resolve, reject) => {
         let command = EXECUTION_COMMANDS[extension];
         if (command) {
-            command = command.replace(/\$\{file\}/g, filename).replace(/\$\{fileBase\}/g, filename.split('.')[0]);
+            command = command.replace(/\$\{file\}/g, filename).replace(/\$\{fileBase\}/g, filename.split('.')[0]); 4
+            const startTime = Date.now();
             const child = spawn(command, { shell: true });
+
+            const interval = setInterval(() => {
+                if (child.pid) {
+                    pidusage(child.pid, (err, stats) => {
+                        if (err) {
+                            clearInterval(interval);
+                            return;
+                        }
+
+                        const executionTime = Date.now() - startTime;
+
+                        if (stats.memory > MAX_MEMORY_USAGE) {
+                            terminateProcess(child, interval);
+                            reject('Memory usage exceeded limit');
+                        } else if (executionTime > MAX_EXECUTION_TIME) {
+                            terminateProcess(child, interval);
+                            reject('Execution time exceeded limit');
+                            
+                        }
+                    });
+                } else {
+                    clearInterval(interval);
+                }
+            }, 1000);
+
+
             child.stdin.write(stdInput);
             child.stdin.end();
 
@@ -56,7 +83,7 @@ export function executeSingleFile(filename: string, extension: string, stdInput:
                 if (code === 0) {
                     resolve(stdout);
                 } else {
-                    reject(new Error(`${stderr}`));
+                    reject(`${stderr}`);
                 }
             });
 
@@ -70,91 +97,35 @@ export function executeSingleFile(filename: string, extension: string, stdInput:
 }
 
 
-/*
 
-export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('extension.runPythonFile', async () => {
-        const editor = vscode.window.activeTextEditor;
-        if (editor) {
-            const document = editor.document;
-            const filePath = vscode.workspace.asRelativePath(document.uri);
+// function monitorProcess(process: ChildProcess) {
+//     const startTime = Date.now();
 
-            if (document.languageId === "python") {
-                const input = await vscode.window.showInputBox({
-                    prompt: "Enter input for the Python script",
-                    placeHolder: "Input here"
-                });
+//     const interval = setInterval(() => {
+//         if (process.pid) {
+//             pidusage(process.pid, (err, stats) => {
+//                 if (err) {
+//                     clearInterval(interval);
+//                     return;
+//                 }
 
-                if (input === undefined) {
-                    return; // User cancelled the input
-                }
+//                 const executionTime = Date.now() - startTime;
 
-                const python = spawn('python', [filePath]);
+//                 if (stats.memory > MAX_MEMORY_USAGE) {
+//                     terminateProcess(process, interval);
+//                     throw Error('Memory usage exceeded limit');
+//                 } else if (executionTime > MAX_EXECUTION_TIME) {
+//                     terminateProcess(process, interval);
+//                     throw Error('Execution time exceeded limit');
+//                 }
+//             });
+//         } else {
+//             clearInterval(interval);
+//         }
+//     }, 1000);
+// }
 
-                python.stdin.write(input);
-                python.stdin.end();
-
-                let output = '';
-                python.stdout.on('data', (data) => {
-                    output += data.toString();
-                });
-
-                python.stderr.on('data', (data) => {
-                    vscode.window.showErrorMessage(`Error: ${data}`);
-                });
-
-                monitorProcess(python);
-
-                python.on('close', (code) => {
-                    if (code === 0) {
-                        vscode.workspace.openTextDocument({
-                            content: output,
-                            language: 'text'
-                        }).then(doc => {
-                            vscode.window.showTextDocument(doc, { preview: false });
-                        });
-                    } else {
-                        vscode.window.showErrorMessage(`Python script exited with code ${code}`);
-                    }
-                });
-            } else {
-                vscode.window.showErrorMessage('Not a Python file');
-            }
-        }
-    });
-
-    context.subscriptions.push(disposable);
-}
-
-function monitorProcess(process: ChildProcess) {
-    const startTime = Date.now();
-
-    const interval = setInterval(() => {
-        if (process.pid) {
-            pidusage(process.pid, (err, stats) => {
-                if (err) {
-                    clearInterval(interval);
-                    return;
-                }
-
-                const executionTime = Date.now() - startTime;
-
-                if (stats.memory > MAX_MEMORY_USAGE) {
-                    terminateProcess(process, interval, 'Memory usage exceeded limit');
-                } else if (executionTime > MAX_EXECUTION_TIME) {
-                    terminateProcess(process, interval, 'Execution time exceeded limit');
-                }
-            });
-        } else {
-            clearInterval(interval);
-        }
-    }, 1000); // Check every second
-}
-
-function terminateProcess(process: ChildProcess, interval: NodeJS.Timeout, reason: string) {
+function terminateProcess(process: ChildProcess, interval: NodeJS.Timeout) {
     clearInterval(interval);
     process.kill();
-    vscode.window.showErrorMessage(`Process terminated: ${reason}`);
 }
-
-*/
