@@ -36,7 +36,7 @@ export function executeSingleFile(filename: string, extension: string, stdInput:
     return new Promise((resolve, reject) => {
         let command = EXECUTION_COMMANDS[extension];
         if (command) {
-            command = command.replace(/\$\{file\}/g, filename).replace(/\$\{fileBase\}/g, filename.split('.')[0]); 4
+            command = command.replace(/\$\{file\}/g, filename).replace(/\$\{fileBase\}/g, filename.split('.')[0]);
             const startTime = Date.now();
             const child = spawn(command, { shell: true });
 
