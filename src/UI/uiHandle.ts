@@ -4,6 +4,7 @@ const generatorFileSelectButton = document.querySelector(".select-generator-file
 const selectElement = document.getElementById('testCaseCount');
 const startButton = document.querySelector(".start");
 const stopButton = document.querySelector(".stop");
+const resetButton = document.querySelector(".reset");
 
 
 // Correct file select button event listener
@@ -41,9 +42,10 @@ startButton?.addEventListener("click", (event) => {
     webVscode.postMessage({
         command: 'findTestCases'
     });
-    if (stopButton) {
+    if (stopButton && resetButton) {
         stopButton.disabled = false;
         startButton.disabled = true;
+        resetButton.disabled = true;
     }
 });
 
@@ -55,6 +57,12 @@ stopButton?.addEventListener("click", (event) => {
     stopButton.disabled = true;
 });
 
+resetButton?.addEventListener("click", (event) => {
+    webVscode.postMessage({
+        command: 'resetState'
+    });
+})
+
 window.addEventListener('message', (event) => {
 
     const message = event.data;
@@ -62,16 +70,29 @@ window.addEventListener('message', (event) => {
     switch (message.command) {
         case 'updateFileName':
             let correctFileInput = document.querySelector(".correct-file-input");
-            if (correctFileInput && message.fileObject["correct"]) {
-                correctFileInput.value = message.fileObject["correct"].split('/').pop();
+            if (correctFileInput) {
+                if (message.fileObject["correct"]) {
+                    correctFileInput.value = message.fileObject["correct"].split('/').pop();
+                }
+                else {
+                    correctFileInput.value = '';
+                }
             }
             let incorrectFileInput = document.querySelector(".incorrect-file-input");
-            if (incorrectFileInput && message.fileObject["incorrect"]) {
-                incorrectFileInput.value = message.fileObject["incorrect"].split('/').pop();
+            if (incorrectFileInput) {
+                if (message.fileObject["incorrect"]) {
+                    incorrectFileInput.value = message.fileObject["incorrect"].split('/').pop();
+                } else {
+                    incorrectFileInput.value = '';
+                }
             }
             let generatorFileInput = document.querySelector(".generator-file-input");
-            if (generatorFileInput && message.fileObject["generator"]) {
-                generatorFileInput.value = message.fileObject["generator"].split('/').pop();
+            if (generatorFileInput) {
+                if (message.fileObject["generator"]) {
+                    generatorFileInput.value = message.fileObject["generator"].split('/').pop();
+                } else {
+                    generatorFileInput.value = '';
+                }
             }
         case 'updateOutputs':
             let testCaseTextArea = document.querySelector(".test-case");
@@ -85,6 +106,10 @@ window.addEventListener('message', (event) => {
         case 'enableStart':
             if (startButton) {
                 startButton.disabled = false;
+            }
+        case 'enableReset':
+            if (resetButton) {
+                resetButton.disabled = false;
             }
 
     }

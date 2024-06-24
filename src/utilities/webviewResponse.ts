@@ -45,3 +45,9 @@ export function enableStartButton(webviewView: vscode.WebviewView){
         command: 'enableStart'
     });
 }
+
+export function enableResetButton(webviewView: vscode.WebviewView){
+    webviewView.webview.postMessage({
+        command: 'enableReset'
+    });
+}

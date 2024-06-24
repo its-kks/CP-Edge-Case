@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { getNonce } from "./utilities/getNonce";
-import { selectFile, updateFileName, setOutput, enableStartButton } from "./utilities/webviewResponse";
+import { selectFile, updateFileName, setOutput, enableStartButton, enableResetButton } from "./utilities/webviewResponse";
 import { executeFiles } from "./utilities/handleFileExecution";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
@@ -73,16 +73,28 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                     else {
                         vscode.window.showWarningMessage("Select all files first");
                     }
-                    if (this._fileObject && this._fileObject["execute"]==="false") {
+                    if (this._fileObject && this._fileObject["execute"] === "false") {
                         vscode.window.showWarningMessage("Executing stopped");
                     }
                     enableStartButton(webviewView);
+                    enableResetButton(webviewView);
                     return;
                 case 'stopExecution':
                     if (this._fileObject && this._fileObject["execute"]) {
                         this._fileObject["execute"] = "false";
                     }
                     vscode.window.showWarningMessage("Stopping execution");
+                    return;
+                case 'resetState':
+                    if (this._fileObject) {
+                        this._fileObject["correct"] = undefined;
+                        this._fileObject["incorrect"] = undefined;
+                        this._fileObject["generator"] = undefined;
+                        this._fileObject["count"] = "1";
+                        this._fileObject["execute"] = "true";
+                    }
+                    updateFileName(webviewView,{...this._fileObject});
+                    setOutput(webviewView,['','','']);
                     return;
             }
         });
