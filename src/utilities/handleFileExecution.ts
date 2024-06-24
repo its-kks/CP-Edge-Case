@@ -5,7 +5,6 @@ import { MAX_EXECUTION_TIME, MAX_MEMORY_USAGE, EXECUTION_COMMANDS } from '../con
 
 
 export async function executeFiles(fileObject: { [key: string]: string | undefined }) {
-
     const extGen = fileObject["generator"]?.split('.').pop();
     const extCorr = fileObject["correct"]?.split('.').pop();
     const extIncorr = fileObject["incorrect"]?.split('.').pop();
@@ -19,25 +18,14 @@ export async function executeFiles(fileObject: { [key: string]: string | undefin
             try {
                 generatorOutput = await executeSingleFile(fileObject["generator"], extGen, '');
                 if (fileObject["correct"] && extCorr && fileObject["execute"] === "true") {
-                    try {
-                        correctOutput = await executeSingleFile(fileObject["correct"], extCorr, generatorOutput);
-                    }
-                    catch (error) {
-                        throw error;
-                    }
-
+                    correctOutput = await executeSingleFile(fileObject["correct"], extCorr, generatorOutput);
                 }
                 if (fileObject["incorrect"] && extIncorr && fileObject["execute"] === "true") {
-                    try {
-                        incorrectOutput = await executeSingleFile(fileObject["incorrect"], extIncorr, generatorOutput);
-                    }
-                    catch (error) {
-                        throw error;
-                    }
+                    incorrectOutput = await executeSingleFile(fileObject["incorrect"], extIncorr, generatorOutput);
                 }
-            }
-            catch (error) {
-                vscode.window.showErrorMessage(`${error}`);
+            } catch (error) {
+                vscode.window.showErrorMessage(`Error executing file: ${error}`);
+                return; 
             }
         }
     }
