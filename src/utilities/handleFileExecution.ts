@@ -10,24 +10,38 @@ export async function executeFiles(fileObject: { [key: string]: string | undefin
     const extIncorr = fileObject["incorrect"]?.split('.').pop();
 
     let generatorOutput: string = '';
-    let correctOutput: string = ' ';
-    let incorrectOutput: string = ' ';
+    let correctOutput: string = '';
+    let incorrectOutput: string = '';
+    let testCaseCount = 1;
 
-    while (correctOutput === incorrectOutput && fileObject["execute"] === "true") {
-        if (fileObject["generator"] && extGen) {
-            try {
-                generatorOutput = await executeSingleFile(fileObject["generator"], extGen, '');
-                if (fileObject["correct"] && extCorr && fileObject["execute"] === "true") {
-                    correctOutput = await executeSingleFile(fileObject["correct"], extCorr, generatorOutput);
+    if (fileObject["count"]) {
+        testCaseCount = parseInt(fileObject["count"]);
+    }
+    let i = 0;
+    while (testCaseCount !== i && fileObject["execute"] === "true") {
+        let testcase = '';
+        let correct = ' ';
+        let incorrect = ' ';
+        while (correct === incorrect && fileObject["execute"] === "true") {
+            if (fileObject["generator"] && extGen) {
+                try {
+                    testcase = (await executeSingleFile(fileObject["generator"], extGen, ''))
+                    generatorOutput += testcase;
+                    if (fileObject["correct"] && extCorr && fileObject["execute"] === "true") {
+                        correct = (await executeSingleFile(fileObject["correct"], extCorr, testcase))
+                        correctOutput += correct;
+                    }
+                    if (fileObject["incorrect"] && extIncorr && fileObject["execute"] === "true") {
+                        incorrect = (await executeSingleFile(fileObject["incorrect"], extIncorr, testcase));
+                        incorrectOutput += incorrect;
+                    }
+                } catch (error) {
+                    vscode.window.showErrorMessage(`Error executing file: ${error}`);
+                    return ['', ' ', ' '];
                 }
-                if (fileObject["incorrect"] && extIncorr && fileObject["execute"] === "true") {
-                    incorrectOutput = await executeSingleFile(fileObject["incorrect"], extIncorr, generatorOutput);
-                }
-            } catch (error) {
-                vscode.window.showErrorMessage(`Error executing file: ${error}`);
-                return [generatorOutput, correctOutput, incorrectOutput];
             }
         }
+        i += 1;
     }
     return [generatorOutput, correctOutput, incorrectOutput];
 }
@@ -56,7 +70,7 @@ export function executeSingleFile(filename: string, extension: string, stdInput:
                         } else if (executionTime > MAX_EXECUTION_TIME) {
                             terminateProcess(child, interval);
                             reject('Execution time exceeded limit');
-                            
+
                         }
                     });
                 } else {
@@ -95,35 +109,6 @@ export function executeSingleFile(filename: string, extension: string, stdInput:
         }
     });
 }
-
-
-
-// function monitorProcess(process: ChildProcess) {
-//     const startTime = Date.now();
-
-//     const interval = setInterval(() => {
-//         if (process.pid) {
-//             pidusage(process.pid, (err, stats) => {
-//                 if (err) {
-//                     clearInterval(interval);
-//                     return;
-//                 }
-
-//                 const executionTime = Date.now() - startTime;
-
-//                 if (stats.memory > MAX_MEMORY_USAGE) {
-//                     terminateProcess(process, interval);
-//                     throw Error('Memory usage exceeded limit');
-//                 } else if (executionTime > MAX_EXECUTION_TIME) {
-//                     terminateProcess(process, interval);
-//                     throw Error('Execution time exceeded limit');
-//                 }
-//             });
-//         } else {
-//             clearInterval(interval);
-//         }
-//     }, 1000);
-// }
 
 function terminateProcess(process: ChildProcess, interval: NodeJS.Timeout) {
     clearInterval(interval);

@@ -59,7 +59,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                 case 'findTestCases':
                     if (this._fileObject && this._fileObject["correct"] &&
                         this._fileObject["incorrect"] && this._fileObject["generator"] &&
-                        this._fileObject["execute"]) {
+                        this._fileObject["execute"] && this._fileObject["count"]) {
 
                         this._fileObject["execute"] = "true";
                         let testcaseAndOutput: string[] = await executeFiles(this._fileObject);
@@ -67,6 +67,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                             testcaseAndOutput[0] = '';
                             testcaseAndOutput[1] = '';
                             testcaseAndOutput[2] = '';
+                        }
+                        else {
+                            testcaseAndOutput[0] = this._fileObject["count"] + "\n" + testcaseAndOutput[0];
                         }
                         setOutput(webviewView, testcaseAndOutput);
                     }
@@ -93,8 +96,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                         this._fileObject["count"] = "1";
                         this._fileObject["execute"] = "true";
                     }
-                    updateFileName(webviewView,{...this._fileObject});
-                    setOutput(webviewView,['','','']);
+                    updateFileName(webviewView, { ...this._fileObject });
+                    setOutput(webviewView, ['', '', '']);
                     return;
             }
         });
