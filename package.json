@@ -37,6 +37,41 @@
           "contextualTitle": "CP Edge Case"
         }
       ]
+    },
+    "configuration": {
+      "title": "CP Edge Case",
+      "properties": {
+        "cp-edge-case.Max Execution Time": {
+          "type": "number",
+          "default": 5000,
+          "description": "Time ( in ms ) for which a file is executed before it is killed"
+        },
+        "cp-edge-case.Max Memory Usage":{
+          "type":"number",
+          "default": 1,
+          "description": "Maximum memory allocation ( in GB ) for file execution"
+        },
+        "cp-edge-case.Python command":{
+          "type":"string",
+          "default": "python",
+          "description": "Command to execute python files ( python3, py )"
+        },
+        "cp-edge-case.CPP command": {
+          "type": "string",
+          "default": "g++",
+          "description": "Command to compile and execute C++ files ( clang++ )"
+        },
+        "cp-edge-case.C command": {
+          "type": "string",
+          "default": "gcc",
+          "description": "Command to compile and execute C files ( clang )" 
+        },
+        "cp-edge-case.Java command": {
+          "type": "string",
+          "default": "javac ${file} && java ${fileBase}",
+          "description": "Command to compile and execute Java files"
+        }
+      }
     }
   },
   "scripts": {

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-
+import { PATH_SEPARATOR } from "../constants";
 
 // opens pop up window to select file and return path of selected file wrapped in promise
 export async function selectFile() {
@@ -27,26 +27,27 @@ export async function selectFile() {
 export function updateFileName(webviewView: vscode.WebviewView, fileObject: { [key: string]: string | undefined }) {
     webviewView.webview.postMessage({
         command: 'updateFileName',
-        fileObject: fileObject
+        fileObject: fileObject,
+        PATH_SEPARATOR: PATH_SEPARATOR
     });
 
 }
 
 // send message to show the generated test case and output of correct and incorrect file
-export function setOutput(webviewView: vscode.WebviewView, receivedOutput : string[] | undefined) {
+export function setOutput(webviewView: vscode.WebviewView, receivedOutput: string[] | undefined) {
     webviewView.webview.postMessage({
         command: 'updateOutputs',
         receivedOutput: receivedOutput
     });
 }
 
-export function enableStartButton(webviewView: vscode.WebviewView){
+export function enableStartButton(webviewView: vscode.WebviewView) {
     webviewView.webview.postMessage({
         command: 'enableStart'
     });
 }
 
-export function enableResetButton(webviewView: vscode.WebviewView){
+export function enableResetButton(webviewView: vscode.WebviewView) {
     webviewView.webview.postMessage({
         command: 'enableReset'
     });

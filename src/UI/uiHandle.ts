@@ -72,7 +72,7 @@ window.addEventListener('message', (event) => {
             let correctFileInput = document.querySelector(".correct-file-input");
             if (correctFileInput) {
                 if (message.fileObject["correct"]) {
-                    correctFileInput.value = message.fileObject["correct"].split('/').pop();
+                    correctFileInput.value = message.fileObject["correct"].split(message.PATH_SEPARATOR).pop();
                 }
                 else {
                     correctFileInput.value = '';
@@ -81,7 +81,7 @@ window.addEventListener('message', (event) => {
             let incorrectFileInput = document.querySelector(".incorrect-file-input");
             if (incorrectFileInput) {
                 if (message.fileObject["incorrect"]) {
-                    incorrectFileInput.value = message.fileObject["incorrect"].split('/').pop();
+                    incorrectFileInput.value = message.fileObject["incorrect"].split(message.PATH_SEPARATOR).pop();
                 } else {
                     incorrectFileInput.value = '';
                 }
@@ -89,7 +89,7 @@ window.addEventListener('message', (event) => {
             let generatorFileInput = document.querySelector(".generator-file-input");
             if (generatorFileInput) {
                 if (message.fileObject["generator"]) {
-                    generatorFileInput.value = message.fileObject["generator"].split('/').pop();
+                    generatorFileInput.value = message.fileObject["generator"].split(message.PATH_SEPARATOR).pop();
                 } else {
                     generatorFileInput.value = '';
                 }
