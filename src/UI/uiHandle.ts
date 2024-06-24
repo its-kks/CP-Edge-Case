@@ -61,7 +61,7 @@ resetButton?.addEventListener("click", (event) => {
     webVscode.postMessage({
         command: 'resetState'
     });
-})
+});
 
 window.addEventListener('message', (event) => {
 

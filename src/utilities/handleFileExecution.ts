@@ -4,7 +4,7 @@ import pidusage from 'pidusage';
 import { MAX_EXECUTION_TIME, MAX_MEMORY_USAGE, EXECUTION_COMMANDS } from '../constants';
 
 
-export async function executeFiles(fileObject: { [key: string]: string | undefined }) {
+export async function executeFiles(fileObject: { [key: string]: string | undefined }) : Promise<string[]>{
     const extGen = fileObject["generator"]?.split('.').pop();
     const extCorr = fileObject["correct"]?.split('.').pop();
     const extIncorr = fileObject["incorrect"]?.split('.').pop();
@@ -25,7 +25,7 @@ export async function executeFiles(fileObject: { [key: string]: string | undefin
                 }
             } catch (error) {
                 vscode.window.showErrorMessage(`Error executing file: ${error}`);
-                return; 
+                return [generatorOutput, correctOutput, incorrectOutput];
             }
         }
     }
