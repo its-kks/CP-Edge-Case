@@ -73,7 +73,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                     else {
                         vscode.window.showWarningMessage("Select all files first");
                     }
-                    if (this._fileObject && this._fileObject["execute"]) {
+                    if (this._fileObject && this._fileObject["execute"]==="false") {
                         vscode.window.showWarningMessage("Executing stopped");
                     }
                     enableStartButton(webviewView);

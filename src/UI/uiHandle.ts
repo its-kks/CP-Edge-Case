@@ -75,15 +75,11 @@ window.addEventListener('message', (event) => {
             }
         case 'updateOutputs':
             let testCaseTextArea = document.querySelector(".test-case");
-            if (testCaseTextArea && message.receivedOutput[0]) {
-                testCaseTextArea.value = message.receivedOutput[0];
-            }
             let correctOutputTextArea = document.querySelector(".correct-output");
-            if (correctOutputTextArea && message.receivedOutput[1]) {
-                correctOutputTextArea.value = message.receivedOutput[1];
-            }
             let incorrectOutputTextArea = document.querySelector(".incorrect-output");
-            if (incorrectOutputTextArea && message.receivedOutput[2]) {
+            if (testCaseTextArea && correctOutputTextArea && incorrectOutputTextArea) {
+                testCaseTextArea.value = message.receivedOutput[0];
+                correctOutputTextArea.value = message.receivedOutput[1];
                 incorrectOutputTextArea.value = message.receivedOutput[2];
             }
         case 'enableStart':
