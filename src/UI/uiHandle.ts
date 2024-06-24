@@ -94,6 +94,7 @@ window.addEventListener('message', (event) => {
                     generatorFileInput.value = '';
                 }
             }
+            return;
         case 'updateOutputs':
             let testCaseTextArea = document.querySelector(".test-case");
             let correctOutputTextArea = document.querySelector(".correct-output");
@@ -103,14 +104,17 @@ window.addEventListener('message', (event) => {
                 correctOutputTextArea.value = message.receivedOutput[1];
                 incorrectOutputTextArea.value = message.receivedOutput[2];
             }
+            return;
         case 'enableStart':
             if (startButton) {
                 startButton.disabled = false;
             }
+            return;
         case 'enableReset':
             if (resetButton) {
                 resetButton.disabled = false;
             }
+            return;
 
     }
 });
