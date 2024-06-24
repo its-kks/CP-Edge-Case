@@ -39,3 +39,9 @@ export function setOutput(webviewView: vscode.WebviewView, receivedOutput : stri
         receivedOutput: receivedOutput
     });
 }
+
+export function enableStartButton(webviewView: vscode.WebviewView){
+    webviewView.webview.postMessage({
+        command: 'enableStart'
+    });
+}

@@ -3,6 +3,7 @@ const incorrectFileSelectButton = document.querySelector(".select-wrong-file");
 const generatorFileSelectButton = document.querySelector(".select-generator-file");
 const selectElement = document.getElementById('testCaseCount');
 const startButton = document.querySelector(".start");
+const stopButton = document.querySelector(".stop");
 
 
 // Correct file select button event listener
@@ -40,9 +41,19 @@ startButton?.addEventListener("click", (event) => {
     webVscode.postMessage({
         command: 'findTestCases'
     });
+    if (stopButton) {
+        stopButton.disabled = false;
+        startButton.disabled = true;
+    }
 });
 
 
+stopButton?.addEventListener("click", (event) => {
+    webVscode.postMessage({
+        command: 'stopExecution'
+    });
+    stopButton.disabled = true;
+});
 
 window.addEventListener('message', (event) => {
 
@@ -64,16 +75,20 @@ window.addEventListener('message', (event) => {
             }
         case 'updateOutputs':
             let testCaseTextArea = document.querySelector(".test-case");
-            if (testCaseTextArea &&  message.receivedOutput[0]) {
+            if (testCaseTextArea && message.receivedOutput[0]) {
                 testCaseTextArea.value = message.receivedOutput[0];
             }
             let correctOutputTextArea = document.querySelector(".correct-output");
-            if (correctOutputTextArea &&  message.receivedOutput[1]) {
+            if (correctOutputTextArea && message.receivedOutput[1]) {
                 correctOutputTextArea.value = message.receivedOutput[1];
             }
             let incorrectOutputTextArea = document.querySelector(".incorrect-output");
             if (incorrectOutputTextArea && message.receivedOutput[2]) {
                 incorrectOutputTextArea.value = message.receivedOutput[2];
+            }
+        case 'enableStart':
+            if (startButton) {
+                startButton.disabled = false;
             }
 
     }

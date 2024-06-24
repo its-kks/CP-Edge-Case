@@ -14,20 +14,26 @@ export async function executeFiles(fileObject: { [key: string]: string | undefin
     let correctOutput: string = ' ';
     let incorrectOutput: string = ' ';
 
-    while (correctOutput === incorrectOutput) {
+    while (correctOutput === incorrectOutput && fileObject["execute"] === "true") {
         if (fileObject["generator"] && extGen) {
             try {
                 generatorOutput = await executeSingleFile(fileObject["generator"], extGen, '');
-                if (fileObject["correct"] && extCorr && fileObject["incorrect"] && extIncorr) {
-
+                if (fileObject["correct"] && extCorr && fileObject["execute"] === "true") {
                     try {
                         correctOutput = await executeSingleFile(fileObject["correct"], extCorr, generatorOutput);
-                        incorrectOutput = await executeSingleFile(fileObject["incorrect"], extIncorr, generatorOutput);
                     }
                     catch (error) {
                         throw error;
                     }
 
+                }
+                if (fileObject["incorrect"] && extIncorr && fileObject["execute"] === "true") {
+                    try {
+                        incorrectOutput = await executeSingleFile(fileObject["incorrect"], extIncorr, generatorOutput);
+                    }
+                    catch (error) {
+                        throw error;
+                    }
                 }
             }
             catch (error) {
@@ -35,7 +41,7 @@ export async function executeFiles(fileObject: { [key: string]: string | undefin
             }
         }
     }
-    return [generatorOutput,correctOutput, incorrectOutput];
+    return [generatorOutput, correctOutput, incorrectOutput];
 }
 
 export function executeSingleFile(filename: string, extension: string, stdInput: string): Promise<string> {

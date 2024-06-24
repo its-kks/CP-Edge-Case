@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { getNonce } from "./utilities/getNonce";
-import { selectFile, updateFileName, setOutput } from "./utilities/webviewResponse";
+import { selectFile, updateFileName, setOutput, enableStartButton } from "./utilities/webviewResponse";
 import { executeFiles } from "./utilities/handleFileExecution";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
@@ -14,6 +14,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         this._fileObject["incorrect"] = undefined;
         this._fileObject["generator"] = undefined;
         this._fileObject["count"] = "1";
+        this._fileObject["execute"] = "true";
 
     }
 
@@ -57,13 +58,31 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                     return;
                 case 'findTestCases':
                     if (this._fileObject && this._fileObject["correct"] &&
-                        this._fileObject["incorrect"] && this._fileObject["generator"]) {
-                        let testcaseAndOutput : string[] = await executeFiles({ ...this._fileObject });
-                        setOutput(webviewView,testcaseAndOutput);
+                        this._fileObject["incorrect"] && this._fileObject["generator"] &&
+                        this._fileObject["execute"]) {
+
+                        this._fileObject["execute"] = "true";
+                        let testcaseAndOutput: string[] = await executeFiles(this._fileObject);
+                        if (testcaseAndOutput[1] === testcaseAndOutput[2] || this._fileObject["execute"] === "false") {
+                            testcaseAndOutput[0] = '';
+                            testcaseAndOutput[1] = '';
+                            testcaseAndOutput[2] = '';
+                        }
+                        setOutput(webviewView, testcaseAndOutput);
                     }
-                    else{
+                    else {
                         vscode.window.showWarningMessage("Select all files first");
                     }
+                    if (this._fileObject && this._fileObject["execute"]) {
+                        vscode.window.showWarningMessage("Executing stopped");
+                    }
+                    enableStartButton(webviewView);
+                    return;
+                case 'stopExecution':
+                    if (this._fileObject && this._fileObject["execute"]) {
+                        this._fileObject["execute"] = "false";
+                    }
+                    vscode.window.showWarningMessage("Stopping execution");
                     return;
             }
         });
