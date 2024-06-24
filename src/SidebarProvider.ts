@@ -63,7 +63,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
                         this._fileObject["execute"] = "true";
                         let testcaseAndOutput: string[] = await executeFiles(this._fileObject);
-                        disableStopButton(webviewView);
                         if (testcaseAndOutput[1] === testcaseAndOutput[2] || this._fileObject["execute"] === "false") {
                             testcaseAndOutput[0] = '';
                             testcaseAndOutput[1] = '';
@@ -80,6 +79,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                     if (this._fileObject && this._fileObject["execute"] === "false") {
                         vscode.window.showWarningMessage("Executing stopped");
                     }
+                    disableStopButton(webviewView);
                     enableStartButton(webviewView);
                     enableResetButton(webviewView);
                     return;
@@ -121,6 +121,10 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
         const scriptUiUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this._extensionUri, "src/UI", "uiHandle.ts")
+        );
+
+        const gifUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri,"media/gif","Loading.gif")
         );
 
         // Use a nonce to only allow a specific script to be run.
@@ -185,7 +189,12 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                         
                     </div>
                     <div class="start-stop-div">
-                        <button class='start'>Run</button>
+                        <button class='start'>
+                            <div class="start-button-div">
+                                Run
+                            </div>
+                            <img src=${gifUri} class="start-button-img" style="display:none;">
+                        </button>
                         <button class='stop' disabled>Stop</button>
                         <button class='reset'>Reset</button>
                     </div>

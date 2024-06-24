@@ -5,6 +5,8 @@ const selectElement = document.getElementById('testCaseCount');
 const startButton = document.querySelector(".start");
 const stopButton = document.querySelector(".stop");
 const resetButton = document.querySelector(".reset");
+const startDiv = document.querySelector(".start-button-div")
+const startImg = document.querySelector(".start-button-img");
 
 
 // Correct file select button event listener
@@ -42,7 +44,9 @@ startButton?.addEventListener("click", (event) => {
     webVscode.postMessage({
         command: 'findTestCases'
     });
-    if (stopButton && resetButton) {
+    if (stopButton && resetButton && startDiv && startImg) {
+        startDiv.style.display = 'none';
+        startImg.style.display = 'inline';
         stopButton.disabled = false;
         startButton.disabled = true;
         resetButton.disabled = true;
@@ -106,8 +110,10 @@ window.addEventListener('message', (event) => {
             }
             return;
         case 'enableStart':
-            if (startButton) {
+            if (startButton && startDiv && startImg) {
                 startButton.disabled = false;
+                startDiv.style.display = 'block';
+                startImg.style.display = 'none';
             }
             return;
         case 'enableReset':

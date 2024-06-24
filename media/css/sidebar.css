@@ -108,3 +108,7 @@ button.reset:hover {
     align-items: center;
     justify-content: space-evenly;
 }
+.start-button-img{
+    height: 12px;
+    width: 12px;
+}
