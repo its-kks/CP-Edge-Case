@@ -25,15 +25,12 @@ export async function executeFiles(fileObject: { [key: string]: string | undefin
         while (correct === incorrect && fileObject["execute"] === "true") {
             if (fileObject["generator"] && extGen) {
                 try {
-                    testcase = (await executeSingleFile(fileObject["generator"], extGen, ''))
-                    generatorOutput += testcase;
+                    testcase = (await executeSingleFile(fileObject["generator"], extGen, ''));
                     if (fileObject["correct"] && extCorr && fileObject["execute"] === "true") {
-                        correct = (await executeSingleFile(fileObject["correct"], extCorr, testcase))
-                        correctOutput += correct;
+                        correct = (await executeSingleFile(fileObject["correct"], extCorr, "1\n"+testcase));
                     }
                     if (fileObject["incorrect"] && extIncorr && fileObject["execute"] === "true") {
-                        incorrect = (await executeSingleFile(fileObject["incorrect"], extIncorr, testcase));
-                        incorrectOutput += incorrect;
+                        incorrect = (await executeSingleFile(fileObject["incorrect"], extIncorr, "1\n"+testcase));
                     }
                 } catch (error) {
                     vscode.window.showErrorMessage(`Error executing file: ${error}`);
@@ -41,6 +38,9 @@ export async function executeFiles(fileObject: { [key: string]: string | undefin
                 }
             }
         }
+        generatorOutput += testcase;
+        correctOutput += correct;
+        incorrectOutput += incorrect;
         i += 1;
     }
     return [generatorOutput, correctOutput, incorrectOutput];
