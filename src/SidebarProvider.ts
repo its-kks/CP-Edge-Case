@@ -6,7 +6,9 @@ import { executeFiles } from "./utilities/handleFileExecution";
 export class SidebarProvider implements vscode.WebviewViewProvider {
     _view?: vscode.WebviewView;
     _doc?: vscode.TextDocument;
-    _fileObject?: { [key: string]: string | undefined };
+    _fileObject?: { [key: string]: string | undefined};
+    _testcaseAndOutput? : string[];
+
 
     constructor(private readonly _extensionUri: vscode.Uri) {
         this._fileObject = {};
@@ -29,6 +31,14 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         };
 
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+
+
+        webviewView.onDidChangeVisibility((event) => {
+            if (webviewView.visible) {
+                updateFileName(webviewView, { ...this._fileObject });
+                setOutput(webviewView, this._testcaseAndOutput);
+            }
+        });
 
         webviewView.webview.onDidReceiveMessage(async (data) => {
             // handle messages sent by webview and received by extension
@@ -62,16 +72,16 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                         this._fileObject["execute"] && this._fileObject["count"]) {
 
                         this._fileObject["execute"] = "true";
-                        let testcaseAndOutput: string[] = await executeFiles(this._fileObject);
-                        if (testcaseAndOutput[1] === testcaseAndOutput[2] || this._fileObject["execute"] === "false") {
-                            testcaseAndOutput[0] = '';
-                            testcaseAndOutput[1] = '';
-                            testcaseAndOutput[2] = '';
+                        this._testcaseAndOutput = await executeFiles(this._fileObject);
+                        if (this._testcaseAndOutput[1] === this._testcaseAndOutput[2] || this._fileObject["execute"] === "false") {
+                            this._testcaseAndOutput[0] = '';
+                            this._testcaseAndOutput[1] = '';
+                            this._testcaseAndOutput[2] = '';
                         }
                         else {
-                            testcaseAndOutput[0] = this._fileObject["count"] + "\n" + testcaseAndOutput[0];
+                            this._testcaseAndOutput[0] = this._fileObject["count"] + "\n" + this._testcaseAndOutput[0];
                         }
-                        setOutput(webviewView, testcaseAndOutput);
+                        setOutput(webviewView, this._testcaseAndOutput);
                     }
                     else {
                         vscode.window.showWarningMessage("Select all files first");
@@ -124,7 +134,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         );
 
         const gifUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri,"media/gif","Loading.gif")
+            vscode.Uri.joinPath(this._extensionUri, "media/gif", "Loading.gif")
         );
 
         // Use a nonce to only allow a specific script to be run.
