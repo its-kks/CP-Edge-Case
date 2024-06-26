@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "icon": "media/icons/storeIcon.png",
   "publisher": "KishleshSingh",
-  "repository": {"https://github.com/its-kks/CP-Edge-Case"},
+  "repository": "https://github.com/its-kks/CP-Edge-Case",
   "engines": {
     "vscode": "^1.90.0"
   },
