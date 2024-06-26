@@ -6,8 +6,8 @@ import { executeFiles } from "./utilities/handleFileExecution";
 export class SidebarProvider implements vscode.WebviewViewProvider {
     _view?: vscode.WebviewView;
     _doc?: vscode.TextDocument;
-    _fileObject?: { [key: string]: string | undefined};
-    _testcaseAndOutput? : string[];
+    _fileObject?: { [key: string]: string | undefined };
+    _testcaseAndOutput?: string[];
 
 
     constructor(private readonly _extensionUri: vscode.Uri) {
@@ -33,7 +33,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
 
-        webviewView.onDidChangeVisibility((event) => {
+        webviewView.onDidChangeVisibility( async (event) => {
             if (webviewView.visible) {
                 updateFileName(webviewView, { ...this._fileObject });
                 setOutput(webviewView, this._testcaseAndOutput);
@@ -130,7 +130,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         );
 
         const scriptUiUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, "src/UI", "uiHandle.ts")
+            vscode.Uri.joinPath(this._extensionUri, "src/UI", "uiHandle.js")
         );
 
         const gifUri = webview.asWebviewUri(
@@ -169,7 +169,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                             <button class="select-wrong-file">Select Incorrect Code File</button>
 
                             <input placeholder="No file selected" disabled class="generator-file-input"/>
-                            <button class="select-generator-file">Select Code Generator File</button>
+                            <button class="select-generator-file">Select Test Generator File</button>
 
                             <div class="div-test-case">
                                 <label for="testCaseCount">Select number of test cases:</label>
