@@ -1,71 +1,62 @@
 # cp-edge-case README
 
-This is the README for your extension "cp-edge-case". After writing up a brief description, we recommend including the following sections.
-
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Effortlessly identify edge test cases where your code fails, which are often hidden on competitive programming platforms. This tool requires three files: one containing the code that generates incorrect output, another with the code producing the correct output, and a third file designed to generate test cases. It then automatically generates test cases where your code fails by comparing the output with the correct code, helping you pinpoint and address specific issues.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- **pidusage**: Version 3.0.2 or higher. This package is used for monitoring the process CPU and memory usage.
+- **react**: Version 18.3.1 or higher. Required for projects using React.
 
-## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
 
-For example:
+## Settings
 
-This extension contributes the following settings:
+The CP Edge Case extension offers several settings to configure the execution environment for different programming languages. Below are the available settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+### Max Execution Time
 
-## Known Issues
+- **Key**: `cp-edge-case.Max Execution Time`
+- **Type**: `number`
+- **Default**: `5000`
+- **Description**: Specifies the maximum time (in milliseconds) for which a file is executed before it is terminated. This helps in preventing infinite loops or excessively long-running processes.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+### Max Memory Usage
 
-## Release Notes
+- **Key**: `cp-edge-case.Max Memory Usage`
+- **Type**: `number`
+- **Default**: `1`
+- **Description**: Sets the maximum memory allocation (in GB) for file execution. This setting helps in managing the memory usage of the programs being executed.
 
-Users appreciate release notes as you update your extension.
+### Python Command
 
-### 1.0.0
+- **Key**: `cp-edge-case.Python command`
+- **Type**: `string`
+- **Default**: `python`
+- **Description**: Defines the command to execute Python files. You can customize it to your Python interpreter command (`python3`, `py`, etc.).
 
-Initial release of ...
+### CPP Command
 
-### 1.0.1
+- **Key**: `cp-edge-case.CPP command`
+- **Type**: `string`
+- **Default**: `g++`
+- **Description**: Specifies the command to compile and execute C++ files. You can change it according to the C++ compiler you use (`clang++`, etc.).
 
-Fixed issue #.
+### C Command
 
-### 1.1.0
+- **Key**: `cp-edge-case.C command`
+- **Type**: `string`
+- **Default**: `gcc`
+- **Description**: Determines the command to compile and execute C files. This can be customized to use a different C compiler (`clang`, etc.).
 
-Added features X, Y, and Z.
+### Java Command
 
----
+- **Key**: `cp-edge-case.Java command`
+- **Type**: `string`
+- **Default**: `javac ${file} && java ${fileBase}`
+- **Description**: Provides the command to compile and execute Java files. This setting is particularly useful for specifying the Java compiler and execution commands in one go.
 
-## Following extension guidelines
+## How to Configure Settings
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+You can configure these settings directly in your Visual Studio Code settings.json file or through the Settings UI under the Extensions category.
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+For more information on how to edit settings, refer to the [Visual Studio Code documentation](https://code.visualstudio.com/docs/getstarted/settings).
