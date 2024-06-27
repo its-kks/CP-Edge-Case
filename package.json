@@ -2,7 +2,7 @@
   "name": "cp-edge-case",
   "displayName": "CP Edge Case",
   "description": "Find edge cases for CP problems",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "icon": "media/icons/storeIcon.png",
   "publisher": "KishleshSingh",
   "repository": "https://github.com/its-kks/CP-Edge-Case",
@@ -16,8 +16,7 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
-    ],
+    "commands": [],
     "viewsContainers": {
       "activitybar": [
         {
@@ -46,13 +45,13 @@
           "default": 5000,
           "description": "Time ( in ms ) for which a file is executed before it is killed"
         },
-        "cp-edge-case.Max Memory Usage":{
-          "type":"number",
+        "cp-edge-case.Max Memory Usage": {
+          "type": "number",
           "default": 1,
           "description": "Maximum memory allocation ( in GB ) for file execution"
         },
-        "cp-edge-case.Python command":{
-          "type":"string",
+        "cp-edge-case.Python command": {
+          "type": "string",
           "default": "python",
           "description": "Command to execute python files ( python3, py )"
         },
@@ -64,7 +63,7 @@
         "cp-edge-case.C command": {
           "type": "string",
           "default": "gcc",
-          "description": "Command to compile and execute C files ( clang )" 
+          "description": "Command to compile and execute C files ( clang )"
         },
         "cp-edge-case.Java command": {
           "type": "string",
@@ -102,7 +101,6 @@
   },
   "dependencies": {
     "pidusage": "^3.0.2"
-
   },
   "keywords": [],
   "author": "",
