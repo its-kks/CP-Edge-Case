@@ -2,7 +2,7 @@
   "name": "cp-edge-case",
   "displayName": "CP Edge Case",
   "description": "Find edge cases for CP problems",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "icon": "media/icons/storeIcon.png",
   "publisher": "KishleshSingh",
   "repository": "https://github.com/its-kks/CP-Edge-Case",
