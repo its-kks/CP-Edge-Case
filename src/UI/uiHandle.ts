@@ -1,14 +1,12 @@
-
-
-const correctFileSelectButton : HTMLButtonElement | null= document.querySelector(".slect-correct-file");
-const incorrectFileSelectButton : HTMLButtonElement | null= document.querySelector(".select-wrong-file");
-const generatorFileSelectButton : HTMLButtonElement | null= document.querySelector(".select-generator-file");
-const selectElement : HTMLElement | null = document.getElementById('testCaseCount');
-const startButton : HTMLButtonElement | null= document.querySelector(".start");
-const stopButton : HTMLButtonElement | null= document.querySelector(".stop");
-const resetButton : HTMLButtonElement | null= document.querySelector(".reset");
-const startDiv : HTMLDivElement | null = document.querySelector(".start-button-div");
-const startImg : HTMLImageElement | null= document.querySelector(".start-button-img");
+let correctFileSelectButton = document.querySelector(".slect-correct-file");
+let incorrectFileSelectButton = document.querySelector(".select-wrong-file");
+let generatorFileSelectButton = document.querySelector(".select-generator-file");
+let selectElement = document.getElementById('testCaseCount');
+let startButton = document.querySelector(".start");
+let stopButton = document.querySelector(".stop");
+let resetButton = document.querySelector(".reset");
+let startDiv = document.querySelector(".start-button-div");
+let startImg = document.querySelector(".start-button-img");
 
 
 // Correct file select button event listener
@@ -41,7 +39,8 @@ selectElement?.addEventListener("change", (event) => {
     // @ts-ignore
     webVscode.postMessage({
         command: 'testCountChanged',
-        count: (event.target as HTMLInputElement)?.value,
+        // @ts-ignore
+        count: (event.target)?.value,
     });
 });
 
@@ -52,10 +51,15 @@ startButton?.addEventListener("click", (event) => {
         command: 'findTestCases'
     });
     if (stopButton && resetButton && startDiv && startImg) {
+        // @ts-ignore
         startDiv.style.display = 'none';
+        // @ts-ignore
         startImg.style.display = 'inline';
+        // @ts-ignore
         stopButton.disabled = false;
+        // @ts-ignore
         startButton.disabled = true;
+        // @ts-ignore
         resetButton.disabled = true;
     }
 });
@@ -66,6 +70,7 @@ stopButton?.addEventListener("click", (event) => {
     webVscode.postMessage({
         command: 'stopExecution'
     });
+    // @ts-ignore
     stopButton.disabled = true;
 });
 
@@ -82,56 +87,70 @@ window.addEventListener('message', (event) => {
 
     switch (message.command) {
         case 'updateFileName':
-            let correctFileInput : HTMLInputElement | null = document.querySelector(".correct-file-input");
+            let correctFileInput = document.querySelector(".correct-file-input");
             if (correctFileInput) {
                 if (message.fileObject["correct"]) {
+                    // @ts-ignore
                     correctFileInput.value = message.fileObject["correct"].split(message.PATH_SEPARATOR).pop();
                 }
                 else {
+                    // @ts-ignore
                     correctFileInput.value = '';
                 }
             }
-            let incorrectFileInput : HTMLInputElement | null= document.querySelector(".incorrect-file-input");
+            let incorrectFileInput = document.querySelector(".incorrect-file-input");
             if (incorrectFileInput) {
                 if (message.fileObject["incorrect"]) {
+                    // @ts-ignore
                     incorrectFileInput.value = message.fileObject["incorrect"].split(message.PATH_SEPARATOR).pop();
                 } else {
+                    // @ts-ignore
                     incorrectFileInput.value = '';
                 }
             }
-            let generatorFileInput : HTMLInputElement | null= document.querySelector(".generator-file-input");
+            let generatorFileInput = document.querySelector(".generator-file-input");
             if (generatorFileInput) {
                 if (message.fileObject["generator"]) {
+                    // @ts-ignore
                     generatorFileInput.value = message.fileObject["generator"].split(message.PATH_SEPARATOR).pop();
                 } else {
+                    // @ts-ignore
                     generatorFileInput.value = '';
                 }
             }
             return;
         case 'updateOutputs':
-            let testCaseTextArea :HTMLTextAreaElement | null = document.querySelector(".test-case");
-            let correctOutputTextArea :HTMLTextAreaElement | null= document.querySelector(".correct-output");
-            let incorrectOutputTextArea :HTMLTextAreaElement | null= document.querySelector(".incorrect-output");
+            let testCaseTextArea = document.querySelector(".test-case");
+            let correctOutputTextArea = document.querySelector(".correct-output");
+            let incorrectOutputTextArea = document.querySelector(".incorrect-output");
             if (testCaseTextArea && correctOutputTextArea && incorrectOutputTextArea) {
+                // @ts-ignore
                 testCaseTextArea.value = message.receivedOutput[0];
+                // @ts-ignore
                 correctOutputTextArea.value = message.receivedOutput[1];
+                // @ts-ignore
                 incorrectOutputTextArea.value = message.receivedOutput[2];
             }
             return;
         case 'enableStart':
             if (startButton && startDiv && startImg) {
+                // @ts-ignore
                 startButton.disabled = false;
+                // @ts-ignore
                 startDiv.style.display = 'block';
+                // @ts-ignore
                 startImg.style.display = 'none';
             }
             return;
         case 'enableReset':
             if (resetButton) {
+                // @ts-ignore
                 resetButton.disabled = false;
             }
             return;
         case 'disableStop':
             if (stopButton){
+                // @ts-ignore
                 stopButton.disabled = true;
             }
             return;
