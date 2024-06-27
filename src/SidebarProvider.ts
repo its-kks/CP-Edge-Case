@@ -130,7 +130,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         );
 
         const scriptUiUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, "src/UI", "uiHandle.js")
+            vscode.Uri.joinPath(this._extensionUri, "src/UI", "uiHandle.ts")
         );
 
         const gifUri = webview.asWebviewUri(
