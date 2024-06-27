@@ -7,7 +7,7 @@
   "publisher": "KishleshSingh",
   "repository": "https://github.com/its-kks/CP-Edge-Case",
   "engines": {
-    "vscode": "^1.90.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Other",
