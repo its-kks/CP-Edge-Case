@@ -1,16 +1,19 @@
-const correctFileSelectButton = document.querySelector(".slect-correct-file");
-const incorrectFileSelectButton = document.querySelector(".select-wrong-file");
-const generatorFileSelectButton = document.querySelector(".select-generator-file");
-const selectElement = document.getElementById('testCaseCount');
-const startButton = document.querySelector(".start");
-const stopButton = document.querySelector(".stop");
-const resetButton = document.querySelector(".reset");
-const startDiv = document.querySelector(".start-button-div");
-const startImg = document.querySelector(".start-button-img");
+
+
+const correctFileSelectButton : HTMLButtonElement | null= document.querySelector(".slect-correct-file");
+const incorrectFileSelectButton : HTMLButtonElement | null= document.querySelector(".select-wrong-file");
+const generatorFileSelectButton : HTMLButtonElement | null= document.querySelector(".select-generator-file");
+const selectElement : HTMLElement | null = document.getElementById('testCaseCount');
+const startButton : HTMLButtonElement | null= document.querySelector(".start");
+const stopButton : HTMLButtonElement | null= document.querySelector(".stop");
+const resetButton : HTMLButtonElement | null= document.querySelector(".reset");
+const startDiv : HTMLDivElement | null = document.querySelector(".start-button-div");
+const startImg : HTMLImageElement | null= document.querySelector(".start-button-img");
 
 
 // Correct file select button event listener
 correctFileSelectButton?.addEventListener("click", () => {
+    // @ts-ignore
     webVscode.postMessage({
         command: 'correctFileSelect',
     });
@@ -18,6 +21,7 @@ correctFileSelectButton?.addEventListener("click", () => {
 
 // Incorrect file select button event listener
 incorrectFileSelectButton?.addEventListener("click", () => {
+    // @ts-ignore
     webVscode.postMessage({
         command: 'incorrectFileSelect',
     });
@@ -25,6 +29,7 @@ incorrectFileSelectButton?.addEventListener("click", () => {
 
 // Generator file select button event listener
 generatorFileSelectButton?.addEventListener("click", () => {
+    // @ts-ignore
     webVscode.postMessage({
         command: 'generatorFileSelect',
     });
@@ -33,14 +38,16 @@ generatorFileSelectButton?.addEventListener("click", () => {
 
 // event listener for option list
 selectElement?.addEventListener("change", (event) => {
+    // @ts-ignore
     webVscode.postMessage({
         command: 'testCountChanged',
-        count: event.target?.value,
+        count: (event.target as HTMLInputElement)?.value,
     });
 });
 
 // event listener for start button
 startButton?.addEventListener("click", (event) => {
+    // @ts-ignore
     webVscode.postMessage({
         command: 'findTestCases'
     });
@@ -55,6 +62,7 @@ startButton?.addEventListener("click", (event) => {
 
 
 stopButton?.addEventListener("click", (event) => {
+    // @ts-ignore
     webVscode.postMessage({
         command: 'stopExecution'
     });
@@ -62,6 +70,7 @@ stopButton?.addEventListener("click", (event) => {
 });
 
 resetButton?.addEventListener("click", (event) => {
+    // @ts-ignore
     webVscode.postMessage({
         command: 'resetState'
     });
@@ -73,7 +82,7 @@ window.addEventListener('message', (event) => {
 
     switch (message.command) {
         case 'updateFileName':
-            let correctFileInput = document.querySelector(".correct-file-input");
+            let correctFileInput : HTMLInputElement | null = document.querySelector(".correct-file-input");
             if (correctFileInput) {
                 if (message.fileObject["correct"]) {
                     correctFileInput.value = message.fileObject["correct"].split(message.PATH_SEPARATOR).pop();
@@ -82,7 +91,7 @@ window.addEventListener('message', (event) => {
                     correctFileInput.value = '';
                 }
             }
-            let incorrectFileInput = document.querySelector(".incorrect-file-input");
+            let incorrectFileInput : HTMLInputElement | null= document.querySelector(".incorrect-file-input");
             if (incorrectFileInput) {
                 if (message.fileObject["incorrect"]) {
                     incorrectFileInput.value = message.fileObject["incorrect"].split(message.PATH_SEPARATOR).pop();
@@ -90,7 +99,7 @@ window.addEventListener('message', (event) => {
                     incorrectFileInput.value = '';
                 }
             }
-            let generatorFileInput = document.querySelector(".generator-file-input");
+            let generatorFileInput : HTMLInputElement | null= document.querySelector(".generator-file-input");
             if (generatorFileInput) {
                 if (message.fileObject["generator"]) {
                     generatorFileInput.value = message.fileObject["generator"].split(message.PATH_SEPARATOR).pop();
@@ -100,9 +109,9 @@ window.addEventListener('message', (event) => {
             }
             return;
         case 'updateOutputs':
-            let testCaseTextArea = document.querySelector(".test-case");
-            let correctOutputTextArea = document.querySelector(".correct-output");
-            let incorrectOutputTextArea = document.querySelector(".incorrect-output");
+            let testCaseTextArea :HTMLTextAreaElement | null = document.querySelector(".test-case");
+            let correctOutputTextArea :HTMLTextAreaElement | null= document.querySelector(".correct-output");
+            let incorrectOutputTextArea :HTMLTextAreaElement | null= document.querySelector(".incorrect-output");
             if (testCaseTextArea && correctOutputTextArea && incorrectOutputTextArea) {
                 testCaseTextArea.value = message.receivedOutput[0];
                 correctOutputTextArea.value = message.receivedOutput[1];
