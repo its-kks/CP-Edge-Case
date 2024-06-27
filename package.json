@@ -101,8 +101,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "pidusage": "^3.0.2",
-    "react": "^18.3.1"
+    "pidusage": "^3.0.2"
 
   },
   "keywords": [],
