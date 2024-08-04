@@ -17,6 +17,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         this._fileObject["generator"] = undefined;
         this._fileObject["count"] = "1";
         this._fileObject["execute"] = "true";
+        this._fileObject["hasTestCaseCount"] = "true";
 
     }
 
@@ -66,6 +67,12 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                         this._fileObject["count"] = data.count;
                     }
                     return;
+                case 'testCaseTypeChanged':
+                    if (this._fileObject) {
+                        this._fileObject["count"] = "1";
+                        this._fileObject["hasTestCaseCount"] = data.hasTestCaseCount;
+                    }
+                    return;
                 case 'findTestCases':
                     if (this._fileObject && this._fileObject["correct"] &&
                         this._fileObject["incorrect"] && this._fileObject["generator"] &&
@@ -78,7 +85,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                             this._testcaseAndOutput[1] = '';
                             this._testcaseAndOutput[2] = '';
                         }
-                        else {
+                        else if(this._fileObject["hasTestCaseCount"] == "true"){
                             this._testcaseAndOutput[0] = this._fileObject["count"] + "\n" + this._testcaseAndOutput[0];
                         }
                         setOutput(webviewView, this._testcaseAndOutput);
@@ -163,13 +170,21 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                         <div class = "div-input">
 
                             <input placeholder="No file selected" disabled class="correct-file-input"/>
-                            <button class="slect-correct-file">Select Correct Code File</button>
+                            <button class="slect-correct-file">Select Correct Code File (Brute Force)</button>
 
                             <input placeholder="No file selected" disabled class="incorrect-file-input"/>
-                            <button class="select-wrong-file">Select Incorrect Code File</button>
+                            <button class="select-wrong-file">Select Incorrect Code File (Optimized)</button>
 
                             <input placeholder="No file selected" disabled class="generator-file-input"/>
-                            <button class="select-generator-file">Select Test Generator File</button>
+                            <div class= 'generator-button-div'>
+                                <button class="select-generator-file">Select Test Case Generator File</button>
+                                <button class="generate-generator-file">
+                                    <span class="text-auto-generate">
+                                        Auto Generate Test Case Generator File
+                                    </span>
+                                    <img src=${gifUri} class="loader-image-auto-generate" style="display:none;">
+                                </button>
+                            </div>
 
                             <div class="div-test-case">
                                 <label for="testCaseCount">Select number of test cases:</label>
@@ -179,6 +194,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                                     <option value="3">3</option>
                                     <option value="4">4</option>
                                     <option value="5">5</option>
+                                </select>
+                            </div>
+                            <div class="div-type-test-case">
+                                <label for="testCaseType">Select test case type:</label>
+                                <select class="test-case-type" name="testCaseType">
+                                    <option value="true">Has test case count</option>
+                                    <option value="false">Don't have test case count</option>
                                 </select>
                             </div>
 

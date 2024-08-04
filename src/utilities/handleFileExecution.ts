@@ -8,6 +8,7 @@ export async function executeFiles(fileObject: { [key: string]: string | undefin
     const extGen = fileObject["generator"]?.split('.').pop();
     const extCorr = fileObject["correct"]?.split('.').pop();
     const extIncorr = fileObject["incorrect"]?.split('.').pop();
+    const hasTestCaseCount = fileObject["hasTestCaseCount"];
 
     let generatorOutput: string = '';
     let correctOutput: string = '';
@@ -27,10 +28,12 @@ export async function executeFiles(fileObject: { [key: string]: string | undefin
                 try {
                     testcase = (await executeSingleFile(fileObject["generator"], extGen, ''));
                     if (fileObject["correct"] && extCorr && fileObject["execute"] === "true") {
-                        correct = (await executeSingleFile(fileObject["correct"], extCorr, "1\n"+testcase));
+                        correct = (await executeSingleFile(fileObject["correct"], extCorr, 
+                            hasTestCaseCount == "true" ? "1\n"+testcase : testcase));
                     }
                     if (fileObject["incorrect"] && extIncorr && fileObject["execute"] === "true") {
-                        incorrect = (await executeSingleFile(fileObject["incorrect"], extIncorr, "1\n"+testcase));
+                        incorrect = (await executeSingleFile(fileObject["incorrect"], extIncorr, 
+                            hasTestCaseCount == "true" ? "1\n"+testcase : testcase));
                     }
                 } catch (error) {
                     vscode.window.showErrorMessage(`Error executing file: ${error}`);

@@ -1,12 +1,16 @@
 let correctFileSelectButton = document.querySelector(".slect-correct-file");
 let incorrectFileSelectButton = document.querySelector(".select-wrong-file");
 let generatorFileSelectButton = document.querySelector(".select-generator-file");
-let selectElement = document.getElementById('testCaseCount');
+let selectTestCaseCount = document.getElementById('testCaseCount');
 let startButton = document.querySelector(".start");
 let stopButton = document.querySelector(".stop");
 let resetButton = document.querySelector(".reset");
 let startDiv = document.querySelector(".start-button-div");
 let startImg = document.querySelector(".start-button-img");
+let autoGenerateButton = document.querySelector(".generate-generator-file");
+let loaderAutoGenerate = document.querySelector(".loader-image-auto-generate");
+let textAutoGenerate = document.querySelector(".text-auto-generate");
+let testCaseType = document.querySelector(".test-case-type");
 
 
 // Correct file select button event listener
@@ -33,9 +37,19 @@ generatorFileSelectButton?.addEventListener("click", () => {
     });
 });
 
+// Auto generate generator file button event listener
+autoGenerateButton.addEventListener("click",()=>{
+    loaderAutoGenerate.style.display = 'inline';
+    textAutoGenerate.style.display = 'none';
+
+    webVscode.postMessage({
+        command: 'autoGenerateGeneratorFile',
+    })
+})
+
 
 // event listener for option list
-selectElement?.addEventListener("change", (event) => {
+selectTestCaseCount?.addEventListener("change", (event) => {
     // @ts-ignore
     webVscode.postMessage({
         command: 'testCountChanged',
@@ -43,6 +57,42 @@ selectElement?.addEventListener("change", (event) => {
         count: (event.target)?.value,
     });
 });
+
+
+function addOption(select, value, text) {
+    let option = document.createElement("option");
+    option.value = value;
+    option.text = text;
+    select.appendChild(option);
+}
+
+function removeOptionExcept(select) {
+    while(select.options.length != 1){
+        select.remove(1);
+    }
+}
+
+// event listener option list test case type
+testCaseType.addEventListener("change",(event)=>{
+    if(event.target.value==="true"){
+        if(selectTestCaseCount.options.length!=5){
+            addOption(selectTestCaseCount,'2','2');
+            addOption(selectTestCaseCount,'3','3');
+            addOption(selectTestCaseCount,'4','4');
+            addOption(selectTestCaseCount,'5','5');
+        }
+    }
+    else{
+        if(selectTestCaseCount.options.length!=1){
+            removeOptionExcept(selectTestCaseCount);
+        }
+    }
+    webVscode.postMessage({
+        command:'testCaseTypeChanged',
+        hasTestCaseCount: event.target.value
+    })
+})
+
 
 // event listener for start button
 startButton?.addEventListener("click", (event) => {
