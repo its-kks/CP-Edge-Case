@@ -6,6 +6,7 @@
   "icon": "media/icons/storeIcon.png",
   "publisher": "KishleshSingh",
   "repository": "https://github.com/its-kks/CP-Edge-Case",
+  "type": "commonjs",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -16,7 +17,13 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [],
+    "commands": [
+      {
+        "command": "cp-edge-case.chatCopilot",
+        "title": "Chat Integration",
+        "category": "CP Edge Case"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {
@@ -100,6 +107,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "node-fetch": "^3.3.2",
     "pidusage": "^3.0.2"
   },
   "keywords": [],

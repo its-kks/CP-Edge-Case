@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { getNonce } from "./utilities/getNonce";
 import { selectFile, updateFileName, setOutput, enableStartButton, enableResetButton, disableStopButton } from "./utilities/webviewResponse";
 import { executeFiles } from "./utilities/handleFileExecution";
+import handleAutoGenerate from "./utilities/handleAutoGenerateGeneratorFile";
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
     _view?: vscode.WebviewView;
@@ -34,7 +35,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
 
-        webviewView.onDidChangeVisibility( async (event) => {
+        webviewView.onDidChangeVisibility(async (event) => {
             if (webviewView.visible) {
                 updateFileName(webviewView, { ...this._fileObject });
                 setOutput(webviewView, this._testcaseAndOutput);
@@ -73,6 +74,15 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                         this._fileObject["hasTestCaseCount"] = data.hasTestCaseCount;
                     }
                     return;
+                case 'autoGenerateGeneratorFile':
+                    vscode.window.showInformationMessage("Click Competetive Companion extension button in browser");
+                    if (this._fileObject) {
+                        const pyPathUrlInp = vscode.Uri.joinPath(this._extensionUri, "media/python", "fetchInputsUrl.py").path;
+                        const pyPathInpDes = vscode.Uri.joinPath(this._extensionUri, "media/python", "fetchInputDes.py").path;
+                        const inputsAndURL = handleAutoGenerate(pyPathUrlInp,pyPathInpDes);
+                        
+                    }
+                    return;
                 case 'findTestCases':
                     if (this._fileObject && this._fileObject["correct"] &&
                         this._fileObject["incorrect"] && this._fileObject["generator"] &&
@@ -85,7 +95,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                             this._testcaseAndOutput[1] = '';
                             this._testcaseAndOutput[2] = '';
                         }
-                        else if(this._fileObject["hasTestCaseCount"] == "true"){
+                        else if (this._fileObject["hasTestCaseCount"] == "true") {
                             this._testcaseAndOutput[0] = this._fileObject["count"] + "\n" + this._testcaseAndOutput[0];
                         }
                         setOutput(webviewView, this._testcaseAndOutput);

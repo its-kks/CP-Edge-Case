@@ -22,7 +22,6 @@ export function activate(context: vscode.ExtensionContext) {
         for await (const fragment of response.text) {
             responseText += fragment;
         }
-        console.log("hello");
         vscode.window.showWarningMessage(responseText);
 
         const fetchHTML = async (url: string) => {
