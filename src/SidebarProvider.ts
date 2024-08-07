@@ -106,7 +106,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                                 catch(error){
                                     vscode.window.showErrorMessage('Copilot Failed');
                                 }
-                                this._fileObject["generator"] = folderPath+FILE_NAME[language];
+                                this._fileObject["generator"] = folderPath+"/"+FILE_NAME[language];
                                 updateFileName(webviewView, { ...this._fileObject });
                             }
                         }
