@@ -58,3 +58,9 @@ export function disableStopButton(webviewResponse: vscode.WebviewView){
         command: 'disableStop'
     });
 }
+
+export function autoGenerateTestCaseGeneratorCompleted(webviewResponse: vscode.WebviewView){
+    webviewResponse.webview.postMessage({
+        command: 'autoGenerationComplete'
+    })
+}

@@ -38,10 +38,10 @@ generatorFileSelectButton?.addEventListener("click", () => {
 });
 
 // Auto generate generator file button event listener
-autoGenerateButton.addEventListener("click",()=>{
+autoGenerateButton.addEventListener("click", () => {
     loaderAutoGenerate.style.display = 'inline';
     textAutoGenerate.style.display = 'none';
-
+    autoGenerateButton.disabled = true;
     webVscode.postMessage({
         command: 'autoGenerateGeneratorFile',
     })
@@ -67,28 +67,28 @@ function addOption(select, value, text) {
 }
 
 function removeOptionExcept(select) {
-    while(select.options.length != 1){
+    while (select.options.length != 1) {
         select.remove(1);
     }
 }
 
 // event listener option list test case type
-testCaseType.addEventListener("change",(event)=>{
-    if(event.target.value==="true"){
-        if(selectTestCaseCount.options.length!=5){
-            addOption(selectTestCaseCount,'2','2');
-            addOption(selectTestCaseCount,'3','3');
-            addOption(selectTestCaseCount,'4','4');
-            addOption(selectTestCaseCount,'5','5');
+testCaseType.addEventListener("change", (event) => {
+    if (event.target.value === "true") {
+        if (selectTestCaseCount.options.length != 5) {
+            addOption(selectTestCaseCount, '2', '2');
+            addOption(selectTestCaseCount, '3', '3');
+            addOption(selectTestCaseCount, '4', '4');
+            addOption(selectTestCaseCount, '5', '5');
         }
     }
-    else{
-        if(selectTestCaseCount.options.length!=1){
+    else {
+        if (selectTestCaseCount.options.length != 1) {
             removeOptionExcept(selectTestCaseCount);
         }
     }
     webVscode.postMessage({
-        command:'testCaseTypeChanged',
+        command: 'testCaseTypeChanged',
         hasTestCaseCount: event.target.value
     })
 })
@@ -199,10 +199,16 @@ window.addEventListener('message', (event) => {
             }
             return;
         case 'disableStop':
-            if (stopButton){
+            if (stopButton) {
                 // @ts-ignore
                 stopButton.disabled = true;
             }
+            return;
+        case 'autoGenerationComplete':
+            loaderAutoGenerate.style.display = 'none';
+            textAutoGenerate.style.display = 'inline';
+            autoGenerateButton.disabled = false;
+
             return;
     }
 });

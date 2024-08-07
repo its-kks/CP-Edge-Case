@@ -32,7 +32,7 @@ def run(httpd):
 
 def stopServerTimeout(server,serverThread):
     currTime = time.time()
-    endTime = currTime + 10  # in seconds
+    endTime = currTime + 30  # in seconds
     while time.time() < endTime and serverThread.is_alive():
         time.sleep(1)  # Sleep for 10 seconds
     if(serverThread.is_alive()):

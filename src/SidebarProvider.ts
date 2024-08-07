@@ -1,8 +1,13 @@
 import * as vscode from "vscode";
 import { getNonce } from "./utilities/getNonce";
-import { selectFile, updateFileName, setOutput, enableStartButton, enableResetButton, disableStopButton } from "./utilities/webviewResponse";
+import { selectFile, updateFileName, setOutput, enableStartButton, enableResetButton, disableStopButton,
+    autoGenerateTestCaseGeneratorCompleted
+ } from "./utilities/webviewResponse";
 import { executeFiles } from "./utilities/handleFileExecution";
 import handleAutoGenerate from "./utilities/handleAutoGenerateGeneratorFile";
+import { AUTO_GENERATED_FILE_TYPE, FILE_NAME, PROMPT_COUNT_ABSENT, PROMPT_COUNT_PRESENT } from "./constants";
+import makeLLMRequestAndFileAdd from "./utilities/makeLLMRequestAndFileAdd";
+
 
 export class SidebarProvider implements vscode.WebviewViewProvider {
     _view?: vscode.WebviewView;
@@ -79,8 +84,36 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                     if (this._fileObject) {
                         const pyPathUrlInp = vscode.Uri.joinPath(this._extensionUri, "media/python", "fetchInputsUrl.py").path;
                         const pyPathInpDes = vscode.Uri.joinPath(this._extensionUri, "media/python", "fetchInputDes.py").path;
-                        const inputsAndURL = handleAutoGenerate(pyPathUrlInp,pyPathInpDes);
-                        
+                        const inputsAndURL = await handleAutoGenerate(pyPathUrlInp, pyPathInpDes);
+                        if (vscode.workspace.workspaceFolders) {
+                            const folderPath: string | undefined = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                            if (inputsAndURL.input && inputsAndURL.inputDescription && inputsAndURL.url) {
+                                let prompt = this._fileObject.hasTestCaseCount == "true" ? PROMPT_COUNT_PRESENT : PROMPT_COUNT_ABSENT;
+                                let language: string = 'python';
+                                if (AUTO_GENERATED_FILE_TYPE) {
+                                    language = AUTO_GENERATED_FILE_TYPE;
+                                }
+                                
+                                prompt = prompt.replace(/\{language\}/g, language);
+                                prompt = prompt.replace(/\{desc\}/g, inputsAndURL.inputDescription);
+                                prompt = prompt.replace(/\{testcase\}/g, inputsAndURL.input);
+
+                                
+                                // making request to LLM
+                                try {
+                                    await makeLLMRequestAndFileAdd(prompt,folderPath,FILE_NAME[language],language);
+                                }
+                                catch(error){
+                                    vscode.window.showErrorMessage('Copilot Failed');
+                                }
+                                this._fileObject["generator"] = folderPath+FILE_NAME[language];
+                                updateFileName(webviewView, { ...this._fileObject });
+                            }
+                        }
+                        else{
+                            vscode.window.showWarningMessage('Opening some directory in VS Code first');
+                        }
+                        autoGenerateTestCaseGeneratorCompleted(webviewView);
                     }
                     return;
                 case 'findTestCases':

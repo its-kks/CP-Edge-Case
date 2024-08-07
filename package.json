@@ -18,11 +18,6 @@
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "cp-edge-case.chatCopilot",
-        "title": "Chat Integration",
-        "category": "CP Edge Case"
-      }
     ],
     "viewsContainers": {
       "activitybar": [
@@ -76,7 +71,17 @@
           "type": "string",
           "default": "javac ${file} && java ${fileBase}",
           "description": "Command to compile and execute Java files"
+        },
+        "cp-edge-case.File Type":{
+          "type":"string",
+          "default":"python",
+          "enum": [
+            "cpp"
+          ],
+          "description": "File type of Automatically Generated Test Case Generator File"
+
         }
+          
       }
     }
   },
