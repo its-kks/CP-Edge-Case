@@ -33,9 +33,14 @@ export const PROMPT_COUNT_PRESENT = `I am providing you a description of input t
     test case. The program should not mention the number of test case in in the starting
     of of the test case ( that is should not print 1 since we are generating single test case).
     The response should be such that I copy and paste complete response and it runs perfectly don't add text before or after program.
+    No input has to be taken by user everything has to be random.
     Description: {desc} Example: {testcase}
 `
-export const PROMPT_COUNT_ABSENT = `
+export const PROMPT_COUNT_ABSENT = `I am providing you a description of input to a program of competetive programming
+    question. Your task is to generate complete {language} code to randomly generate a single test case.
+    The response should be such that I copy and paste complete response and it runs perfectly don't add text before or after program.
+    No input has to be taken by user everything has to be random.
+    Description: {desc} Example: {testcase}
 `;
 
 
