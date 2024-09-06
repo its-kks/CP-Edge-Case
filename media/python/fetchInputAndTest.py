@@ -8,7 +8,7 @@ import re
 
 PORT = 49876
 
-def extract_test_cases(html):
+def extract_test_cases_with_test_case_count(html):
     soup = BeautifulSoup(html, 'html.parser')
     
     test_case_divs = soup.find_all('div', class_='test-example-line')
@@ -37,6 +37,16 @@ def extract_test_cases(html):
     if even_group:
         test_cases.append("\n".join(even_group))
     return test_cases
+
+def extract_test_case_without_test_case_count(html_content):
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    input_divs = soup.find_all('div', class_='input')
+
+    test_cases = [div.find('pre').get_text(strip=True) for div in input_divs]
+
+    return test_cases
+
     
 def extract_input_description(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -80,8 +90,14 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         try:
             problem_data = post_data
-            print(extract_test_cases(problem_data))
-            print(extract_input_description(problem_data))
+            hasTestCaseCount = True if sys.argv[1] == "True" else False 
+            if hasTestCaseCount:
+              print(extract_test_cases_with_test_case_count(problem_data)[1], end="©")
+              print(''.join(extract_input_description(problem_data)[1:]))
+            else:
+              print(extract_test_case_without_test_case_count(problem_data)[0], end="©")
+              print(''.join(extract_input_description(problem_data)))
+                
             sys.exit()
 
         except json.JSONDecodeError as error:

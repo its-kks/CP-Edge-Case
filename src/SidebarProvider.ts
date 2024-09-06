@@ -82,12 +82,11 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                 case 'autoGenerateGeneratorFile':
                     vscode.window.showInformationMessage("Click Competetive Companion extension button in browser");
                     if (this._fileObject) {
-                        const pyPathUrlInp = vscode.Uri.joinPath(this._extensionUri, "media/python", "fetchInputsUrl.py").path;
-                        const pyPathInpDes = vscode.Uri.joinPath(this._extensionUri, "media/python", "fetchInputDes.py").path;
-                        const inputsAndURL = await handleAutoGenerate(pyPathUrlInp, pyPathInpDes);
+                        const pathFetchInputAndTest = vscode.Uri.joinPath(this._extensionUri, "media/python", "fetchInputAndTest.py").path;
+                        const inputsAndURL = await handleAutoGenerate(pathFetchInputAndTest);
                         if (vscode.workspace.workspaceFolders) {
                             const folderPath: string | undefined = vscode.workspace.workspaceFolders[0].uri.fsPath;
-                            if (inputsAndURL.input && inputsAndURL.inputDescription && inputsAndURL.url) {
+                            if (inputsAndURL.input && inputsAndURL.inputDescription) {
                                 let prompt = this._fileObject.hasTestCaseCount == "true" ? PROMPT_COUNT_PRESENT : PROMPT_COUNT_ABSENT;
                                 let language: string = 'python';
                                 if (AUTO_GENERATED_FILE_TYPE) {

@@ -2,12 +2,10 @@ import * as vscode from 'vscode';
 import { spawn, ChildProcess } from 'child_process';
 import { EXECUTION_COMMANDS } from '../constants';
 
-export default async function handleAutoGenerate(pathOne: string, pathTwo: string) {
-  pathOne = pathOne.replace(/ /g, '\\ ');
-  pathTwo = pathTwo.replace(/ /g, '\\ ');
-  let command = EXECUTION_COMMANDS["py"]?.replace(/\$\{file\}/g, pathOne);
+export default async function handleAutoGenerate(path: string) {
+  path = path.replace(/ /g, '\\ ');
+  let command = EXECUTION_COMMANDS["py"]?.replace(/\$\{file\}/g, path);
   let result = {
-    "url": '',
     "input": '',
     "inputDescription": ''
   }
@@ -17,26 +15,12 @@ export default async function handleAutoGenerate(pathOne: string, pathTwo: strin
       let output: string = await runPythonScript(command);
       let outputArray: string[] = output.split('©');
       result.input = outputArray[0];
-      result.url = outputArray[1];
-
-      if (result.url) {
-
-        command = EXECUTION_COMMANDS["py"]?.replace(/\$\{file\}/g, pathTwo) + " " + result.url;
-
-        // scrap data
-        output = await runPythonScript(command);
-        result.inputDescription = output;
-      }
-      else{
-        vscode.window.showWarningMessage('Competetive Companion extension button not pressed');
-        throw new Error("Competetive Companion extension button not pressed");
-      }
+      result.inputDescription = outputArray[1];
     }
     catch (error) {
       console.error(error);
       vscode.window.showErrorMessage('Failed to fetch input data');
     }
-
   }
   return result;
 }
