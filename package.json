@@ -2,7 +2,7 @@
   "name": "cp-edge-case",
   "displayName": "CP Edge Case",
   "description": "Find edge cases for CP problems",
-  "version": "0.0.5",
+  "version": "1.1.0",
   "icon": "media/icons/storeIcon.png",
   "publisher": "KishleshSingh",
   "repository": "https://github.com/its-kks/CP-Edge-Case",
@@ -17,8 +17,7 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
-    ],
+    "commands": [],
     "viewsContainers": {
       "activitybar": [
         {
@@ -72,16 +71,14 @@
           "default": "javac ${file} && java ${fileBase}",
           "description": "Command to compile and execute Java files"
         },
-        "cp-edge-case.File Type":{
-          "type":"string",
-          "default":"python",
+        "cp-edge-case.File Type": {
+          "type": "string",
+          "default": "python",
           "enum": [
             "cpp"
           ],
           "description": "File type of Automatically Generated Test Case Generator File"
-
         }
-          
       }
     }
   },
