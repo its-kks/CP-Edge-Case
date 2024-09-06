@@ -2,10 +2,18 @@
 
 Effortlessly identify edge test cases where your code fails, which are often hidden on competitive programming platforms. This tool requires three files: one containing the code that generates incorrect output, another with the code producing the correct output, and a third file designed to generate test cases. It then automatically generates test cases where your code fails by comparing the output with the correct code, helping you pinpoint and address specific issues.
 
+New Feature has been of auto generating `Test Case Generator File` has been added in version Version **1.1.0**.
+This feature also requires a browser extension whoose url will soon be added, along with video tutorial.
+
 ## Requirements
 
+- **Python**: Version 3.8 or higher.
+- **node**: Version 18.20 or higher.
+
+### Python Libraries:
+
 - **pidusage**: Version 3.0.2 or higher. This package is used for monitoring the process CPU and memory usage.
-- **react**: Version 18.3.1 or higher. Required for projects using React.
+- **beautifulsoup**: Version 4.10.0 or higher. To extract data effectively from HTML.
 
 
 
