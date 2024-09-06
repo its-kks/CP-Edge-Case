@@ -90,7 +90,7 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         try:
             problem_data = post_data
-            hasTestCaseCount = True if sys.argv[1] == "True" else False 
+            hasTestCaseCount = True if sys.argv[1] == "true" else False 
             if hasTestCaseCount:
               print(extract_test_cases_with_test_case_count(problem_data)[1], end="©")
               print(''.join(extract_input_description(problem_data)[1:]))

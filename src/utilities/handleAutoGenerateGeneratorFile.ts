@@ -2,9 +2,9 @@ import * as vscode from 'vscode';
 import { spawn, ChildProcess } from 'child_process';
 import { EXECUTION_COMMANDS } from '../constants';
 
-export default async function handleAutoGenerate(path: string) {
+export default async function handleAutoGenerate(path: string, hasTestCaseCount: string) {
   path = path.replace(/ /g, '\\ ');
-  let command = EXECUTION_COMMANDS["py"]?.replace(/\$\{file\}/g, path);
+  let command = EXECUTION_COMMANDS["py"]?.replace(/\$\{file\}/g, path) + " " + hasTestCaseCount;
   let result = {
     "input": '',
     "inputDescription": ''
