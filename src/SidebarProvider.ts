@@ -80,7 +80,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
                     }
                     return;
                 case 'autoGenerateGeneratorFile':
-                    vscode.window.showInformationMessage("Click Competetive Companion extension button in browser");
+                    vscode.window.showInformationMessage("Click CP Edge case browser extension");
                     if (this._fileObject && this._fileObject["hasTestCaseCount"]) {
                         const pathFetchInputAndTest = vscode.Uri.joinPath(this._extensionUri, "media/python", "fetchInputAndTest.py").path;
                         const inputsAndURL = await handleAutoGenerate(pathFetchInputAndTest, this._fileObject["hasTestCaseCount"]);
